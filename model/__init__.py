@@ -1,9 +1,13 @@
 from sqlalchemy_utils import database_exists, create_database
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
+
 import os
 
 from model.base import Base
+from model.artistas import Artistas
+from model.artistas import ArtistaFilme
+from model.filme import Filme
 
 db_path = "database/"
 
@@ -18,7 +22,7 @@ db_url = 'sqlite:///%s/db.sqlite3' % db_path
 # cria a engine de conexão com o banco
 engine = create_engine(db_url, echo=False)
 
-# Instancia um criador de seção com o banco
+# Instancia um criador de sessão com o banco
 Session = sessionmaker(bind=engine)
 
 # cria o banco se ele não existir 

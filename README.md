@@ -31,3 +31,7 @@ python -m flask run --reload
 ```
 
 Abra o [http://localhost:5000/#/](http://localhost:5000/#/) no navegador para verificar o status da API em execução.
+
+Para a visualização no SQLite no Visual Studio é recomendado baixar uma extensão chamada "SQLite Viewer" como mostrado na imagem abaixo.
+
+![Extensao_sqlite_viewer](img/sqliteviewer.png)
