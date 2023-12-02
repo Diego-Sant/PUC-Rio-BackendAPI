@@ -6,19 +6,22 @@ from schemas import ArtistasSchema
 
 class FilmeSchema(BaseModel):
     nome: str
-    artistas: List[ArtistasSchema]
+    artistas: Optional[List[ArtistasSchema]]
     resumo: str
 
     class Config:
         orm_mode = True
 
 class FilmeBuscaSchema(BaseModel):
+    #Define como deve ser a estrutura que representa a busca. Que será feita apenas com base no nome do filme.
     nome: str
 
 class ListagemFilmesSchema(BaseModel):
     filmes: List[FilmeSchema]
 
 def apresenta_filmes(filmes: List[Filme]):
+    # Retorna uma representação do filme seguindo o schema definido em FilmeViewSchema.
+    
     result = []
     for filme in filmes:
         result.append({
@@ -37,10 +40,13 @@ class FilmeViewSchema(BaseModel):
     artistas:List[ArtistasSchema]
 
 class FilmeDeleteSchema(BaseModel):
-    mesage: str
+    # Define como deve ser a estrutura do dado retornado após uma requisição de remoção.
+    message: str
     nome: str
 
 def apresenta_filme(filme: Filme):
+    # Retorna uma representação do filme seguindo o schema definido em FilmeViewSchema.
+    
     return {
         "id": filme.id,
         "nome": filme.nome,

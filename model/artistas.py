@@ -16,7 +16,7 @@ class Artistas(Base):
 
     def __init__(self, nome: str, filmes: Union[List['ArtistaFilme'], None] = None, data_insercao: Union[DateTime, None] = None):
         self.nome = nome
-        self.filmes = filmes if filmes else []
+        self.filmes = filmes if filmes is not None else []
 
         if data_insercao:
             self.data_insercao = data_insercao
