@@ -34,7 +34,8 @@ def add_filme(form: FilmeSchema):
     filme = Filme(
         nome=form.nome,
         artistas=artistas,
-        resumo=form.resumo)
+        resumo=form.resumo,
+        imageUrl=form.imageUrl)
     
     logger.debug(f"Adicionando nome do filme: '{filme.nome}'")
     try:
@@ -144,6 +145,8 @@ def edit_filme(filme_id: int, form: FilmeSchema):
             filme.nome = form.nome
         if form.resumo:
             filme.resumo = form.resumo
+        if form.imageUrl:
+            filme.imageUrl = form.imageUrl
 
         # removendo artistas antigos
         filme.artistas = []
@@ -177,7 +180,8 @@ def add_artista(form: ArtistasSchema):
     artista = Artistas(
         nome=form.nome,
         filmes=filmes,
-        resumo=form.resumo)
+        resumo=form.resumo,
+        imageUrl=form.imageUrl)
     
     logger.debug(f"Adicionando nome do artista: '{artista.nome}'")
     try:
@@ -260,8 +264,6 @@ def edit_artista(artista_id: int, form: ArtistasSchema):
         # atualizando as informações do artista se existirem nos dados fornecidos
         if form.nome:
             artista.nome = form.nome
-        if form.resumo:
-            artista.resumo = form.resumo
 
         # removendo filmes antigos
         artista.filmes = []

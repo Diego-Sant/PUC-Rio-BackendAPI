@@ -8,6 +8,7 @@ class FilmeSchema(BaseModel):
     nome: str
     artistas: Optional[List[ArtistasSchema]]
     resumo: str
+    imageUrl: str
 
     class Config:
         orm_mode = True
@@ -28,6 +29,7 @@ def apresenta_filmes(filmes: List[Filme]):
             "nome": filme.nome,
             "artistas": filme.artistas,
             "resumo": filme.resumo,
+            "imageUrl": filme.imageUrl
         })
 
     return {"filmes": result}
@@ -36,6 +38,7 @@ class FilmeViewSchema(BaseModel):
     id: int = 1
     nome: str = "Homem-Aranha: Sem Volta para Casa"
     resumo: str = "Com a identidade do Homem-Aranha revelada, para restabelecer seu segredo, Peter Parker pede ajuda ao Doutor Estranho. O feitiço do mago, porém, corre mal e acaba trazendo vilões do Homem-Aranha de outros universos."
+    imageUrl: str = "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/fVzXp3NwovUlLe7fvoRynCmBPNc.jpg"
     total_artistas: int = 1
     artistas:List[ArtistasSchema]
 
@@ -51,6 +54,7 @@ def apresenta_filme(filme: Filme):
         "id": filme.id,
         "nome": filme.nome,
         "resumo": filme.resumo,
+        "imageUrl": filme.imageUrl,
         "total_artistas": len(filme.artistas),
         "artistas": [{"texto": c.texto} for c in filme.artistas]
     }
