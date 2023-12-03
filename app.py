@@ -6,7 +6,7 @@ from urllib.parse import unquote
 
 from sqlalchemy.exc import IntegrityError
 
-from model import Session, Artistas, ArtistaFilme, Filme
+from model import Session, Artistas, Filme
 from logger import logger
 from schemas import *
 
@@ -16,7 +16,7 @@ CORS(app)
 
 home_tag = Tag(name="Documentação", description="Seleção de documentação: Swagger, Redoc ou RapiDoc.")
 filme_tag = Tag(name="Filmes", description="Adição, visualização, edição e remoção de filmes.")
-artista_tag = Tag(name="Artistas", description="Adição e edição de artistas com possibilidade de conexão com os filmes.")
+artista_tag = Tag(name="Artistas", description="Adição, visualização, remoção e edição de artistas.")
 
 @app.get('/', tags=[home_tag])
 def home():
@@ -26,14 +26,9 @@ def home():
 @app.post('/filme', tags=[filme_tag], responses={"200": FilmeViewSchema, "409": ErrorSchema, "400": ErrorSchema})
 
 def add_filme(form: FilmeSchema):
-    artistas = []
-    for artistas_data in form.artistas:
-        artista = Artistas(**artistas_data.dict())
-        artistas.append(artista)
-
     filme = Filme(
         nome=form.nome,
-        artistas=artistas,
+        ano=form.ano,
         resumo=form.resumo,
         imageUrl=form.imageUrl)
     
@@ -147,15 +142,8 @@ def edit_filme(filme_id: int, form: FilmeSchema):
             filme.resumo = form.resumo
         if form.imageUrl:
             filme.imageUrl = form.imageUrl
-
-        # removendo artistas antigos
-        filme.artistas = []
-
-        # adicionando novos artistas
-        if form.artistas:
-            for artistas_data in form.artistas:
-                artista = Artistas(**artistas_data.dict())
-                filme.artistas.append(artista)
+        if form.ano:
+            filme.ano = form.ano
 
         # efetivando as mudanças
         session.commit()
@@ -172,16 +160,9 @@ def edit_filme(filme_id: int, form: FilmeSchema):
 @app.post('/artista', tags=[artista_tag], responses={"200": ArtistaViewSchema, "409": ErrorSchema, "400": ErrorSchema})
 
 def add_artista(form: ArtistasSchema):
-    filmes = []
-    for filmes_data in form.filmes:
-        filme = Filme(**filmes_data.dict())
-        filmes.append(filme)
-
     artista = Artistas(
         nome=form.nome,
-        filmes=filmes,
-        resumo=form.resumo,
-        imageUrl=form.imageUrl)
+        idade=form.idade)
     
     logger.debug(f"Adicionando nome do artista: '{artista.nome}'")
     try:
@@ -264,15 +245,10 @@ def edit_artista(artista_id: int, form: ArtistasSchema):
         # atualizando as informações do artista se existirem nos dados fornecidos
         if form.nome:
             artista.nome = form.nome
-
-        # removendo filmes antigos
-        artista.filmes = []
-
-        # adicionando novos filmes
-        if form.filmes:
-            for filmes_data in form.filmes:
-                filme = Filme(**filmes_data.dict())
-                artista.filmes.append(filme)
+        if form.imageUrl:
+            artista.imageUrl = form.imageUrl
+        if form.idade:
+            artista.idade = form.idade
 
         # efetivando as mudanças
         session.commit()

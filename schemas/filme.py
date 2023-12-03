@@ -2,11 +2,9 @@ from pydantic import BaseModel
 from typing import Optional, List
 from model.filme import Filme
 
-from schemas import ArtistasSchema
-
 class FilmeSchema(BaseModel):
     nome: str
-    artistas: Optional[List[ArtistasSchema]]
+    ano: int
     resumo: str
     imageUrl: str
 
@@ -27,7 +25,7 @@ def apresenta_filmes(filmes: List[Filme]):
     for filme in filmes:
         result.append({
             "nome": filme.nome,
-            "artistas": filme.artistas,
+            "ano": filme.ano,
             "resumo": filme.resumo,
             "imageUrl": filme.imageUrl
         })
@@ -39,8 +37,7 @@ class FilmeViewSchema(BaseModel):
     nome: str = "Homem-Aranha: Sem Volta para Casa"
     resumo: str = "Com a identidade do Homem-Aranha revelada, para restabelecer seu segredo, Peter Parker pede ajuda ao Doutor Estranho. O feitiço do mago, porém, corre mal e acaba trazendo vilões do Homem-Aranha de outros universos."
     imageUrl: str = "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/fVzXp3NwovUlLe7fvoRynCmBPNc.jpg"
-    total_artistas: int = 1
-    artistas:List[ArtistasSchema]
+    ano: int = 2012
 
 class FilmeDeleteSchema(BaseModel):
     # Define como deve ser a estrutura do dado retornado após uma requisição de remoção.
@@ -55,6 +52,5 @@ def apresenta_filme(filme: Filme):
         "nome": filme.nome,
         "resumo": filme.resumo,
         "imageUrl": filme.imageUrl,
-        "total_artistas": len(filme.artistas),
-        "artistas": [{"texto": c.texto} for c in filme.artistas]
+        "ano": filme.ano
     }

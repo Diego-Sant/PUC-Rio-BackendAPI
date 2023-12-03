@@ -6,7 +6,6 @@ import os
 
 from model.base import Base
 from model.artistas import Artistas
-from model.artistas import ArtistaFilme
 from model.filme import Filme
 
 db_path = "database/"

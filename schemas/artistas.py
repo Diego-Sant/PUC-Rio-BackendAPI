@@ -2,11 +2,10 @@ from pydantic import BaseModel
 from typing import List, Optional
 from model.artistas import Artistas
 
-from schemas import FilmeSchema
-
 class ArtistasSchema(BaseModel):
     nome: str
-    filmes: Optional[List[FilmeSchema]]
+    idade: int
+    imageUrl: str
 
     class Config:
         orm_mode = True
@@ -22,7 +21,7 @@ def apresenta_artistas(artistas: List[Artistas]):
     for artista in artistas:
         result.append({
             "nome": artista.nome,
-            "filmes": artista.filmes,
+            "idade": artista.idade,
         })
 
     return {"artistas": result}
@@ -30,8 +29,8 @@ def apresenta_artistas(artistas: List[Artistas]):
 class ArtistaViewSchema(BaseModel):
     id: int = 1
     nome: str = "Will Smith"
-    total_filmes: int = 1
-    filmes:List[FilmeSchema]
+    idade: int = 35
+    imageUrl: str = "https://www.themoviedb.org/t/p/w300_and_h450_bestv2/qgjMfefsKwSYsyCaIX46uyOXIpy.jpg"
 
 class ArtistaDeleteSchema(BaseModel):
     message: str
@@ -41,6 +40,6 @@ def apresenta_artista(artista: Artistas):
     return {
         "id": artista.id,
         "nome": artista.nome,
-        "total_filmes": len(artista.filmes),
-        "filmes": [{"texto": c.texto} for c in artista.filmes]
+        "idade": artista.idade,
+        "imageUrl": artista.imageUrl
     }
