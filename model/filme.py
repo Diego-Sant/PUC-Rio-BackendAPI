@@ -2,7 +2,7 @@ from sqlalchemy import Column, String, Integer, DateTime
 
 from datetime import datetime
 
-from typing import Union, Optional
+from typing import Union
 
 from model import Base
 
@@ -10,14 +10,14 @@ from model import Base
 class Filme(Base):
     __tablename__ = 'filme'
 
-    id = Column(Integer, primary_key=True)
+    id = Column("pk_filme", Integer, primary_key=True)
     nome = Column(String(60), unique=True)
     ano = Column(Integer)
     resumo = Column(String(1000))
-    imageUrl = Column(Optional(String(255)))
-    data_insercao = Column(DateTime, default=datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
+    imageUrl = Column(String(255))
+    data_insercao = Column(DateTime, default=datetime.now())
 
-    def __init__(self, nome: str, ano: int = None, resumo: str = None, imageUrl: str = None, data_insercao: Union[DateTime, None] = None):
+    def __init__(self, nome: str, ano: int, resumo: str, imageUrl: str, data_insercao: Union[DateTime, None] = None):
         self.nome = nome
         self.ano = ano
         self.resumo = resumo

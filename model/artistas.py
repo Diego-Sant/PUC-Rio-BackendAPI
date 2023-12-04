@@ -1,20 +1,20 @@
 from sqlalchemy import Column, String, Integer, DateTime
 
 from datetime import datetime
-from typing import Union, Optional
+from typing import Union
 
 from model import Base
 
 class Artistas(Base):
     __tablename__ = 'artistas'
 
-    id = Column(Integer, primary_key=True)
+    id = Column("pk_artistas", Integer, primary_key=True)
     nome = Column(String(100))
     idade = Column(Integer)
-    imageUrl = Column(Optional(String(255)))
-    data_insercao = Column(DateTime, default=datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
+    imageUrl = Column(String(255))
+    data_insercao = Column(DateTime, default=datetime.now())
 
-    def __init__(self, nome: str, idade: int = None, imageUrl: str = None, data_insercao: Union[DateTime, None] = None):
+    def __init__(self, nome: str, idade: int, imageUrl: str, data_insercao: Union[DateTime, None] = None):
         self.nome = nome
         self.idade = idade
         self.imageUrl = imageUrl

@@ -4,6 +4,7 @@ from flask_cors import CORS
 
 from urllib.parse import unquote
 
+from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
 
 from model import Session, Artistas, Filme
@@ -15,7 +16,7 @@ app = OpenAPI(__name__, info=info)
 CORS(app)
 
 home_tag = Tag(name="Documentação", description="Seleção de documentação: Swagger, Redoc ou RapiDoc.")
-filme_tag = Tag(name="Filmes", description="Adição, visualização, edição e remoção de filmes.")
+filme_tag = Tag(name="Filme", description="Adição, visualização, edição e remoção de filmes.")
 artista_tag = Tag(name="Artistas", description="Adição, visualização, remoção e edição de artistas.")
 
 @app.get('/', tags=[home_tag])
@@ -27,19 +28,21 @@ def home():
 
 def add_filme(form: FilmeSchema):
     filme = Filme(
-        nome=form.nome,
         ano=form.ano,
-        resumo=form.resumo,
-        imageUrl=form.imageUrl)
+        imageUrl=form.imageUrl,
+        nome=form.nome,
+        resumo=form.resumo)
     
     logger.debug(f"Adicionando nome do filme: '{filme.nome}'")
     try:
-        # criando conexão com a base
         session = Session()
+
         # adicionando filme
         session.add(filme)
+
         # efetivando o camando de adição de novo item na tabela
         session.commit()
+
         logger.debug(f"Nome do filme adicionado com sucesso: '{filme.nome}'")
         return apresenta_filme(filme), 200
     
@@ -54,132 +57,127 @@ def add_filme(form: FilmeSchema):
         error_msg = "Aconteceu um erro inesperado. Tente novamente mais tarde!"
         logger.warning(f"Erro ao adicionar filme '{filme.nome}', {error_msg}")
         return {"message": error_msg}, 400
-    
+
 @app.get('/filmes', tags=[filme_tag], responses={"200": ListagemFilmesSchema, "404": ErrorSchema})
 
 def get_filmes():
-    # Faz a busca por todos os filmes cadastrados
-
     logger.debug(f"Procurando todos os filmes...")
-    # criando conexão com a base
     session = Session()
+
     # fazendo a busca
     filmes = session.query(Filme).all()
 
     if not filmes:
-        # se não há filmes cadastrados
         return {"Não há nenhum filme com esse nome no nosso banco de dados!": []}, 200
     else:
         logger.debug(f"%d filmes encontrados no nosso banco de dados!" % len(filmes))
-        # retorna a representação de filmes
-        print(filmes)
-        return apresenta_filmes(filmes), 200
     
+    # retorna a representação de filmes
+    print(filmes)
+    return apresenta_filmes(filmes), 200
+
 @app.get('/filme', tags=[filme_tag], responses={"200": FilmeViewSchema, "404": ErrorSchema})
 
 def get_filme(query: FilmeBuscaSchema):
-    # Faz a busca por um filme a partir do id
-    
-    filme_id = query.id
-    logger.debug(f"Procurando todos os filmes... #{filme_id}")
-    # criando conexão com a base
+    filme_nome = query.nome
+
+    logger.debug(f"Procurando todos os filmes... #{filme_nome}")
     session = Session()
+
     # fazendo a busca
-    filme = session.query(Filme).filter(Filme.id == filme_id).first()
+    filme = session.query(Filme).filter(func.lower(Filme.nome) == func.lower(filme_nome)).first()
 
     if not filme:
-        # se o filme não foi encontrado
-        error_msg = "Não há nenhum filme com esse nome no nosso banco de dados!"
-        logger.warning(f"Erro ao buscar o filme desejado.'{filme_id}', {error_msg}")
+        error_msg = "Não há nenhum filme com esse nome no nosso banco de dados!"  
+        logger.warning(f"Erro ao buscar o filme desejado.'{filme_nome}', {error_msg}")
         return {"message": error_msg}, 404
+
     else:
         logger.debug(f"Filmes com a seguinte pesquisa encontrados: '{filme.nome}'")
+
         return apresenta_filme(filme), 200
-    
+
 @app.delete('/filme', tags=[filme_tag], responses={"200": FilmeDeleteSchema, "404": ErrorSchema})
 
 def delete_filme(query: FilmeBuscaSchema):
-    # Deleta um filme a partir do nome de filme informado
 
+    # Deleta um filme a partir do nome de filme informado
     filme_nome = unquote((query.nome))
+
     print(filme_nome)
+
     logger.debug(f"Deletando dados sobre o filme {filme_nome}")
-    # criando conexão com a base
     session = Session()
+
     # fazendo a remoção
     count = session.query(Filme).filter(Filme.nome == filme_nome).delete()
-    session.commit()
 
+    session.commit()
+    
     if count:
-        # retorna a representação da mensagem de confirmação
         logger.debug(f"O filme {filme_nome} foi deletado com sucesso!")
-        return {"message": "Filme removido", "id": filme_nome}
+        return {"message": "Filme removido", "nome": filme_nome}
     else:
-        # se o filme não foi encontrado
         error_msg = "Não há nenhum filme com esse nome no nosso banco de dados!"
         logger.warning(f"Erro ao deletar o filme '{filme_nome}', {error_msg}")
         return {"message": error_msg}, 404
-    
-@app.put('/filme/<int:filme_id>', tags=[filme_tag], responses={"200": FilmeViewSchema, "404": ErrorSchema, "400": ErrorSchema})
-def edit_filme(filme_id: int, form: FilmeSchema):
 
-    try:
-        # criando conexão com a base
-        session = Session()
-        # buscando filme pelo id
-        filme = session.query(Filme).filter(Filme.id == filme_id).first()
+@app.put('/filme', tags=[filme_tag], responses={"200": FilmeViewSchema, "404": ErrorSchema})
+def edit_filme(query: FilmeBuscaSchema, form: FilmeSchema):
+    filme_nome = unquote(query.nome)
 
-        if not filme:
-            # se o filme não foi encontrado
-            error_msg = "Não há nenhum filme com esse ID no nosso banco de dados!"
-            logger.warning(f"Erro ao editar o filme #{filme_id}, {error_msg}")
-            return {"message": error_msg}, 404
+    logger.debug(f"Editando dados sobre o filme {filme_nome}")
+    session = Session()
 
-        # atualizando as informações do filme se existirem nos dados fornecidos
-        if form.nome:
-            filme.nome = form.nome
-        if form.resumo:
-            filme.resumo = form.resumo
-        if form.imageUrl:
-            filme.imageUrl = form.imageUrl
-        if form.ano:
-            filme.ano = form.ano
+    # fazendo a busca
+    filme = session.query(Filme).filter(func.lower(Filme.nome) == func.lower(filme_nome)).first()
 
-        # efetivando as mudanças
-        session.commit()
+    if not filme:
+        error_msg = "Não há nenhum filme com esse nome no nosso banco de dados!"  
+        logger.warning(f"Erro ao editar o filme desejado.'{filme_nome}', {error_msg}")
+        return {"message": error_msg}, 404
 
-        logger.debug(f"Filme #{filme_id} editado com sucesso!")
-        return apresenta_filme(filme), 200
+    # Atualizando os dados do filme
+    filme.nome = form.nome
+    filme.ano = form.ano
+    filme.resumo = form.resumo
+    filme.imageUrl = form.imageUrl
 
-    except Exception as e:
-        # caso um erro fora do previsto
-        error_msg = "Aconteceu um erro inesperado. Tente novamente mais tarde!"
-        logger.warning(f"Erro ao editar o filme #{filme_id}, {error_msg}")
-        return {"message": error_msg}, 400
-    
+    # efetivando o comando de edição
+    session.commit()
+
+    logger.debug(f"Os dados do filme {filme_nome} foram editados com sucesso!")
+    return apresenta_filme(filme), 200
+
 @app.post('/artista', tags=[artista_tag], responses={"200": ArtistaViewSchema, "409": ErrorSchema, "400": ErrorSchema})
 
 def add_artista(form: ArtistasSchema):
+
     artista = Artistas(
         nome=form.nome,
-        idade=form.idade)
-    
+        idade=form.idade,
+        imageUrl=form.imageUrl)
+
     logger.debug(f"Adicionando nome do artista: '{artista.nome}'")
     try:
         # criando conexão com a base
         session = Session()
+
         # adicionando artista
         session.add(artista)
+
         # efetivando o camando de adição de novo item na tabela
         session.commit()
+
         logger.debug(f"Nome do artista adicionado com sucesso: '{artista.nome}'")
         return apresenta_artista(artista), 200
-    
+
     except IntegrityError as e:
         # como a duplicidade do nome é a provável razão do IntegrityError
         error_msg = "Já existe um artista no banco de dados com esse nome."
         logger.warning(f"Erro ao adicionar o artista '{artista.nome}', {error_msg}")
         return {"message": error_msg}, 409
+
 
     except Exception as e:
         # caso um erro fora do previsto
@@ -190,10 +188,9 @@ def add_artista(form: ArtistasSchema):
 @app.get('/artistas', tags=[artista_tag], responses={"200": ListagemArtistaSchema, "404": ErrorSchema})
 
 def get_artistas():
-
     logger.debug(f"Procurando todos os artistas...")
-    # criando conexão com a base
     session = Session()
+
     # fazendo a busca
     artistas = session.query(Artistas).all()
 
@@ -203,61 +200,50 @@ def get_artistas():
         logger.debug(f"%d artistas encontrados no nosso banco de dados!" % len(artistas))
         print(artistas)
         return apresenta_artistas(artistas), 200
-    
+
 @app.delete('/artista', tags=[artista_tag], responses={"200": ArtistaDeleteSchema, "404": ErrorSchema})
 
 def delete_artista(query: ArtistaBuscaSchema):
-
     artista_nome = unquote((query.nome))
     print(artista_nome)
+
     logger.debug(f"Deletando dados sobre o artista {artista_nome}")
-    # criando conexão com a base
     session = Session()
+
     # fazendo a remoção
     count = session.query(Artistas).filter(Artistas.nome == artista_nome).delete()
     session.commit()
 
     if count:
-        # retorna a representação da mensagem de confirmação
         logger.debug(f"O artista {artista_nome} foi deletado com sucesso!")
-        return {"message": "Artista removido", "id": artista_nome}
+        return {"message": "Artista removido", "nome": artista_nome}
     else:
-        # se o artista não foi encontrado
         error_msg = "Não há nenhum artista com esse nome no nosso banco de dados!"
         logger.warning(f"Erro ao deletar o artista '{artista_nome}', {error_msg}")
         return {"message": error_msg}, 404
     
-@app.put('/artista/<int:artista_id>', tags=[artista_tag], responses={"200": ArtistaViewSchema, "404": ErrorSchema, "400": ErrorSchema})
-def edit_artista(artista_id: int, form: ArtistasSchema):
+@app.put('/artista', tags=[artista_tag], responses={"200": ArtistaViewSchema, "404": ErrorSchema})
+def edit_artista(query: ArtistaBuscaSchema, form: ArtistasSchema):
+    artista_nome = unquote(query.nome)
 
-    try:
-        # criando conexão com a base
-        session = Session()
-        # buscando artista pelo id
-        artista = session.query(Artistas).filter(Artistas.id == artista_id).first()
+    logger.debug(f"Editando dados sobre o artista {artista_nome}")
+    session = Session()
 
-        if not artista:
-            # se o artista não foi encontrado
-            error_msg = "Não há nenhum artista com esse ID no nosso banco de dados!"
-            logger.warning(f"Erro ao editar o artista #{artista_id}, {error_msg}")
-            return {"message": error_msg}, 404
+    # fazendo a busca
+    artista = session.query(Artistas).filter(func.lower(Artistas.nome) == func.lower(artista_nome)).first()
 
-        # atualizando as informações do artista se existirem nos dados fornecidos
-        if form.nome:
-            artista.nome = form.nome
-        if form.imageUrl:
-            artista.imageUrl = form.imageUrl
-        if form.idade:
-            artista.idade = form.idade
+    if not artista:
+        error_msg = "Não há nenhum artista com esse nome no nosso banco de dados!"  
+        logger.warning(f"Erro ao editar o artista desejado.'{artista_nome}', {error_msg}")
+        return {"message": error_msg}, 404
 
-        # efetivando as mudanças
-        session.commit()
+    # Atualizando os dados do artista
+    artista.nome = form.nome
+    artista.idade = form.idade
+    artista.imageUrl = form.imageUrl
 
-        logger.debug(f"Artista #{artista_id} editado com sucesso!")
-        return apresenta_artista(artista), 200
+    # efetivando o comando de edição
+    session.commit()
 
-    except Exception as e:
-        # caso um erro fora do previsto
-        error_msg = "Aconteceu um erro inesperado. Tente novamente mais tarde!"
-        logger.warning(f"Erro ao editar o artista #{artista_id}, {error_msg}")
-        return {"message": error_msg}, 400
+    logger.debug(f"Os dados do artista {artista_nome} foram editados com sucesso!")
+    return apresenta_artista(artista), 200

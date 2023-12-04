@@ -3,15 +3,15 @@ from typing import List, Optional
 from model.artistas import Artistas
 
 class ArtistasSchema(BaseModel):
-    nome: str
-    idade: int
-    imageUrl: str
+    nome: str = "Cillian Murphy"
+    idade: int = 47
+    imageUrl: str = "https://www.themoviedb.org/t/p/w300_and_h450_bestv2/dm6V24NjjvjMiCtbMkc8Y2WPm2e.jpg"
 
     class Config:
         orm_mode = True
 
 class ArtistaBuscaSchema(BaseModel):
-    nome: str
+    nome: str = "Cillian Murphy"
 
 class ListagemArtistaSchema(BaseModel):
     artistas: List[ArtistasSchema]
@@ -22,15 +22,16 @@ def apresenta_artistas(artistas: List[Artistas]):
         result.append({
             "nome": artista.nome,
             "idade": artista.idade,
+            "imageUrl": artista.imageUrl
         })
 
     return {"artistas": result}
 
 class ArtistaViewSchema(BaseModel):
     id: int = 1
-    nome: str = "Will Smith"
-    idade: int = 35
-    imageUrl: str = "https://www.themoviedb.org/t/p/w300_and_h450_bestv2/qgjMfefsKwSYsyCaIX46uyOXIpy.jpg"
+    nome: str = "Robert Downey Jr."
+    idade: int = 58
+    imageUrl: str = "https://www.themoviedb.org/t/p/w300_and_h450_bestv2/im9SAqJPZKEbVZGmjXuLI4O7RvM.jpg"
 
 class ArtistaDeleteSchema(BaseModel):
     message: str

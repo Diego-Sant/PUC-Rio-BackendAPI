@@ -3,17 +3,16 @@ from typing import Optional, List
 from model.filme import Filme
 
 class FilmeSchema(BaseModel):
-    nome: str
-    ano: int
-    resumo: str
-    imageUrl: str
+    nome: str = "Oppenheimer"
+    ano: int = 2023
+    resumo: str = "A história do físico americano J. Robert Oppenheimer, seu papel no Projeto Manhattan e no desenvolvimento da bomba atômica durante a Segunda Guerra Mundial, e o quanto isso mudaria a história do mundo para sempre."
+    imageUrl: str = "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/jvaI1gezzvhkKid00goKxz9fAso.jpg"
 
     class Config:
         orm_mode = True
 
 class FilmeBuscaSchema(BaseModel):
-    #Define como deve ser a estrutura que representa a busca. Que será feita apenas com base no nome do filme.
-    nome: str
+    nome: str = "Oppenheimer"
 
 class ListagemFilmesSchema(BaseModel):
     filmes: List[FilmeSchema]
@@ -50,7 +49,7 @@ def apresenta_filme(filme: Filme):
     return {
         "id": filme.id,
         "nome": filme.nome,
+        "ano": filme.ano,
         "resumo": filme.resumo,
-        "imageUrl": filme.imageUrl,
-        "ano": filme.ano
+        "imageUrl": filme.imageUrl
     }

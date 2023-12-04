@@ -1,0 +1,145 @@
+[2023-12-03 21:55:17,425] ERROR log_exception() L1449 Exception on /filme [POST] - call_trace=C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\flask\app.py L1449
+Traceback (most recent call last):
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\engine\base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\engine\default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: no such column: filme.pk_filme
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\pucpythontrab\backend_api_puc\app.py", line 43, in add_filme
+    logger.debug(f"Nome do filme adicionado com sucesso: '{filme.nome}'")
+                                                           ^^^^^^^^^^
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\orm\attributes.py", line 482, in __get__
+    return self.impl.get(state, dict_)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\orm\attributes.py", line 942, in get
+    value = self._fire_loader_callables(state, key, passive)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\orm\attributes.py", line 973, in _fire_loader_callables
+    return state._load_expired(state, passive)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\orm\state.py", line 712, in _load_expired
+    self.manager.expired_attribute_loader(self, toload, passive)
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\orm\loading.py", line 1451, in load_scalar_attributes
+    result = load_on_ident(
+             ^^^^^^^^^^^^^^
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\orm\loading.py", line 407, in load_on_ident
+    return load_on_pk_identity(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\orm\loading.py", line 530, in load_on_pk_identity
+    session.execute(
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\orm\session.py", line 1712, in execute
+    result = conn._execute_20(statement, params or {}, execution_options)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\engine\base.py", line 1705, in _execute_20
+    return meth(self, args_10style, kwargs_10style, execution_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\sql\elements.py", line 333, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\engine\base.py", line 1572, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\engine\base.py", line 1943, in _execute_context
+    self._handle_dbapi_exception(
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\engine\base.py", line 2124, in _handle_dbapi_exception
+    util.raise_(
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\engine\base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\engine\default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such column: filme.pk_filme
+[SQL: SELECT filme.pk_filme AS filme_pk_filme, filme.nome AS filme_nome, filme.ano AS filme_ano, filme.resumo AS filme_resumo, filme."imageUrl" AS "filme_imageUrl", filme.data_insercao AS filme_data_insercao 
+FROM filme 
+WHERE filme.pk_filme = ?]
+[parameters: (1,)]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\engine\base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\engine\default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: no such column: filme.pk_filme
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\flask\app.py", line 2073, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\flask\app.py", line 1519, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\flask_cors\extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\flask\app.py", line 1517, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\flask\app.py", line 1503, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\flask_openapi3\scaffold.py", line 191, in wrapper
+    resp = _do_wrapper(
+           ^^^^^^^^^^^^
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\flask_openapi3\do_wrapper.py", line 135, in _do_wrapper
+    response = func(**request_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\pucpythontrab\backend_api_puc\app.py", line 55, in add_filme
+    logger.warning(f"Erro ao adicionar filme '{filme.nome}', {error_msg}")
+                                               ^^^^^^^^^^
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\orm\attributes.py", line 482, in __get__
+    return self.impl.get(state, dict_)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\orm\attributes.py", line 942, in get
+    value = self._fire_loader_callables(state, key, passive)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\orm\attributes.py", line 973, in _fire_loader_callables
+    return state._load_expired(state, passive)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\orm\state.py", line 712, in _load_expired
+    self.manager.expired_attribute_loader(self, toload, passive)
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\orm\loading.py", line 1451, in load_scalar_attributes
+    result = load_on_ident(
+             ^^^^^^^^^^^^^^
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\orm\loading.py", line 407, in load_on_ident
+    return load_on_pk_identity(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\orm\loading.py", line 530, in load_on_pk_identity
+    session.execute(
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\orm\session.py", line 1712, in execute
+    result = conn._execute_20(statement, params or {}, execution_options)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\engine\base.py", line 1705, in _execute_20
+    return meth(self, args_10style, kwargs_10style, execution_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\sql\elements.py", line 333, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\engine\base.py", line 1572, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\engine\base.py", line 1943, in _execute_context
+    self._handle_dbapi_exception(
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\engine\base.py", line 2124, in _handle_dbapi_exception
+    util.raise_(
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\engine\base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "C:\Users\Intel\AppData\Roaming\Python\Python311\site-packages\sqlalchemy\engine\default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such column: filme.pk_filme
+[SQL: SELECT filme.pk_filme AS filme_pk_filme, filme.nome AS filme_nome, filme.ano AS filme_ano, filme.resumo AS filme_resumo, filme."imageUrl" AS "filme_imageUrl", filme.data_insercao AS filme_data_insercao 
+FROM filme 
+WHERE filme.pk_filme = ?]
+[parameters: (1,)]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
