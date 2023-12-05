@@ -11,9 +11,9 @@ class Filme(Base):
     __tablename__ = 'filme'
 
     id = Column("pk_filme", Integer, primary_key=True)
-    nome = Column(String(60), unique=True)
+    nome = Column(String(60), index=True)
     ano = Column(Integer)
-    resumo = Column(String(1000))
+    resumo = Column(String(350))
     imageUrl = Column(String(255))
     data_insercao = Column(DateTime, default=datetime.now())
 

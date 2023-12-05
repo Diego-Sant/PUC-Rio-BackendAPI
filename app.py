@@ -64,7 +64,6 @@ def get_filmes():
     logger.debug(f"Procurando todos os filmes...")
     session = Session()
 
-    # fazendo a busca
     filmes = session.query(Filme).all()
 
     if not filmes:
@@ -72,7 +71,6 @@ def get_filmes():
     else:
         logger.debug(f"%d filmes encontrados no nosso banco de dados!" % len(filmes))
     
-    # retorna a representação de filmes
     print(filmes)
     return apresenta_filmes(filmes), 200
 

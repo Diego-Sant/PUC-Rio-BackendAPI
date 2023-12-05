@@ -39,13 +39,10 @@ class FilmeViewSchema(BaseModel):
     ano: int = 2012
 
 class FilmeDeleteSchema(BaseModel):
-    # Define como deve ser a estrutura do dado retornado após uma requisição de remoção.
     message: str
     nome: str
 
 def apresenta_filme(filme: Filme):
-    # Retorna uma representação do filme seguindo o schema definido em FilmeViewSchema.
-    
     return {
         "id": filme.id,
         "nome": filme.nome,
