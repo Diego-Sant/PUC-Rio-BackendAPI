@@ -9,7 +9,7 @@ class Artistas(Base):
     __tablename__ = 'artistas'
 
     id = Column("pk_artistas", Integer, primary_key=True)
-    nome = Column(String(100), index=True)
+    nome = Column(String(100))
     idade = Column(Integer)
     imageUrl = Column(String(255))
     data_insercao = Column(DateTime, default=datetime.now())

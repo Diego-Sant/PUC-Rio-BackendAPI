@@ -11,7 +11,7 @@ class Filme(Base):
     __tablename__ = 'filme'
 
     id = Column("pk_filme", Integer, primary_key=True)
-    nome = Column(String(60), index=True)
+    nome = Column(String(60))
     ano = Column(Integer)
     resumo = Column(String(350))
     imageUrl = Column(String(255))
